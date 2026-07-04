@@ -30,13 +30,23 @@
     <div class="auth-box">
       <div class="logo-mark">K€</div>
       <h1>Registrieren</h1>
-      <p class="auth-sub">Mit deinem Mitarbeiter-Code</p>
-      <input id="reg-email" type="email" placeholder="E-Mail (an die der Code ging)" />
-      <input id="reg-code" type="text" placeholder="Mitarbeiter-Code" style="text-transform:uppercase;" />
-      <input id="reg-name" type="text" placeholder="Dein Name" />
-      <input id="reg-password" type="password" placeholder="Passwort wählen" />
-      <button id="register-btn" class="btn-primary">Konto erstellen</button>
+
+      <div id="register-step-1">
+        <p class="auth-sub">Gib deine E-Mail ein, wir schicken dir einen Code</p>
+        <input id="reg-request-email" type="email" placeholder="Deine E-Mail" />
+        <button id="request-code-btn" class="btn-primary">Code anfordern</button>
+      </div>
+
+      <div id="register-step-2" style="display:none;">
+        <p class="auth-sub">Code eingegeben? Jetzt Konto erstellen</p>
+        <input id="reg-code" type="text" placeholder="Mitarbeiter-Code aus der E-Mail" style="text-transform:uppercase;" />
+        <input id="reg-name" type="text" placeholder="Dein Name" />
+        <input id="reg-password" type="password" placeholder="Passwort wählen" />
+        <button id="register-btn" class="btn-primary">Konto erstellen</button>
+      </div>
+
       <p class="auth-error" id="register-error"></p>
+      <p class="auth-success" id="register-success"></p>
       <div class="auth-links">
         <a id="show-login-from-register">Zurück zum Login</a>
       </div>
