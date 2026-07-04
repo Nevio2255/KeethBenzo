@@ -70,9 +70,33 @@ document.getElementById('login-btn').addEventListener('click', async () => {
   }
 });
 
-// ---------- REGISTER ----------
+// ---------- REGISTER: Schritt 1, Code anfordern ----------
+document.getElementById('request-code-btn').addEventListener('click', async () => {
+  const email = document.getElementById('reg-request-email').value.trim();
+  const errEl = document.getElementById('register-error');
+  const okEl = document.getElementById('register-success');
+  errEl.textContent = ''; okEl.textContent = '';
+  if (!email) { errEl.textContent = 'Bitte E-Mail eingeben'; return; }
+  try {
+    const res = await fetch(`${API}/request-employee-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Fehler'; return; }
+    okEl.textContent = 'Code wurde an deine E-Mail geschickt!';
+    window._registerEmail = email;
+    document.getElementById('register-step-1').style.display = 'none';
+    document.getElementById('register-step-2').style.display = 'block';
+  } catch {
+    errEl.textContent = 'Verbindungsfehler';
+  }
+});
+
+// ---------- REGISTER: Schritt 2, Konto erstellen ----------
 document.getElementById('register-btn').addEventListener('click', async () => {
-  const email = document.getElementById('reg-email').value.trim();
+  const email = window._registerEmail;
   const code = document.getElementById('reg-code').value.trim();
   const name = document.getElementById('reg-name').value.trim();
   const password = document.getElementById('reg-password').value;
@@ -222,7 +246,7 @@ async function loadRevenue() {
   } catch {}
 }
 
-// ---------- MITARBEITER-CODES ----------
+// ---------- MITARBEITER-CODES (Admin, optional manuell) ----------
 document.getElementById('generate-code-btn').addEventListener('click', async () => {
   const emailInput = document.getElementById('employee-email');
   const email = emailInput.value.trim();
