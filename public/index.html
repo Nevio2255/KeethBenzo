@@ -2,44 +2,89 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>KeethBenzo Dashboard</title>
-<link rel="apple-touch-icon" href="icon.png" />
-<link rel="manifest" href="manifest.json" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <!-- LOGIN -->
-  <div id="login-screen" class="login-screen">
-    <div class="login-box">
-      <div class="logo-mark" style="margin: 0 auto 16px;">K€</div>
+  <div id="screen-login" class="auth-screen">
+    <div class="auth-box">
+      <div class="logo-mark">K€</div>
       <h1>KeethBenzo</h1>
-      <input id="login-password" type="password" placeholder="Passwort" />
-      <button id="login-btn">Einloggen</button>
-      <p id="login-error" class="error"></p>
+      <p class="auth-sub">Anmelden</p>
+      <input id="login-email" type="email" placeholder="E-Mail" autocomplete="username" />
+      <input id="login-password" type="password" placeholder="Passwort" autocomplete="current-password" />
+      <button id="login-btn" class="btn-primary">Einloggen</button>
+      <p class="auth-error" id="login-error"></p>
+      <div class="auth-links">
+        <a id="show-forgot">Passwort vergessen?</a>
+        <a id="show-register">Mit Mitarbeiter-Code registrieren</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="screen-register" class="auth-screen" style="display:none;">
+    <div class="auth-box">
+      <div class="logo-mark">K€</div>
+      <h1>Registrieren</h1>
+      <p class="auth-sub">Mit deinem Mitarbeiter-Code</p>
+      <input id="reg-email" type="email" placeholder="E-Mail (an die der Code ging)" />
+      <input id="reg-code" type="text" placeholder="Mitarbeiter-Code" style="text-transform:uppercase;" />
+      <input id="reg-name" type="text" placeholder="Dein Name" />
+      <input id="reg-password" type="password" placeholder="Passwort wählen" />
+      <button id="register-btn" class="btn-primary">Konto erstellen</button>
+      <p class="auth-error" id="register-error"></p>
+      <div class="auth-links">
+        <a id="show-login-from-register">Zurück zum Login</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD -->
+  <div id="screen-forgot" class="auth-screen" style="display:none;">
+    <div class="auth-box">
+      <div class="logo-mark">K€</div>
+      <h1>Passwort vergessen</h1>
+      <p class="auth-sub" id="forgot-step-1-text">Wir schicken dir einen Reset-Code per E-Mail</p>
+      <div id="forgot-step-1">
+        <input id="forgot-email" type="email" placeholder="E-Mail" />
+        <button id="forgot-send-btn" class="btn-primary">Code senden</button>
+      </div>
+      <div id="forgot-step-2" style="display:none;">
+        <input id="forgot-code" type="text" placeholder="Reset-Code aus der E-Mail" />
+        <input id="forgot-new-password" type="password" placeholder="Neues Passwort" />
+        <button id="forgot-reset-btn" class="btn-primary">Passwort ändern</button>
+      </div>
+      <p class="auth-error" id="forgot-error"></p>
+      <p class="auth-success" id="forgot-success"></p>
+      <div class="auth-links">
+        <a id="show-login-from-forgot">Zurück zum Login</a>
+      </div>
     </div>
   </div>
 
   <!-- DASHBOARD -->
   <div class="app" id="app" style="display:none;">
-    <aside class="sidebar">
+    <header class="topbar">
       <div class="brand">
-        <div class="logo-mark">K€</div>
+        <div class="logo-mark small">K€</div>
         <div class="brand-name">KeethBenzo</div>
       </div>
-      <nav>
-        <button class="nav-btn active" data-view="chat">💬 Live-Chat</button>
-        <button class="nav-btn" data-view="revenue">📊 Umsatz</button>
-        <button class="nav-btn" data-view="employees">👤 Mitarbeiter-Codes</button>
-      </nav>
-    </aside>
+      <div class="topbar-right">
+        <span id="user-name-display"></span>
+        <button id="logout-btn" class="btn-ghost">Logout</button>
+      </div>
+    </header>
 
+    <div class="layout-row">
     <main class="content">
       <section id="view-chat" class="view active">
         <div class="chat-layout">
           <div class="user-list" id="user-list"></div>
-          <div class="chat-panel">
+          <div class="chat-panel" id="chat-panel">
             <div class="chat-header" id="chat-header">Wähle einen Nutzer aus</div>
             <div class="chat-messages" id="chat-messages"></div>
             <div class="chat-input">
@@ -64,15 +109,29 @@
         <h1>Mitarbeiter-Code erstellen</h1>
         <div class="code-form">
           <input id="employee-email" placeholder="E-Mail-Adresse des Mitarbeiters" />
-          <button id="generate-code-btn">Code generieren & senden</button>
+          <button id="generate-code-btn">Code senden</button>
         </div>
         <h2>Vergebene Codes</h2>
         <table class="tx-table">
-          <thead><tr><th>Code</th><th>E-Mail</th><th>Erstellt</th></tr></thead>
+          <thead><tr><th>Code</th><th>E-Mail</th><th>Status</th></tr></thead>
           <tbody id="codes-body"></tbody>
         </table>
       </section>
     </main>
+
+    <!-- MOBILE BOTTOM NAV / DESKTOP SIDEBAR -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-view="chat">
+        <span class="nav-icon">💬</span><span>Chat</span>
+      </button>
+      <button class="nav-btn" data-view="revenue">
+        <span class="nav-icon">📊</span><span>Umsatz</span>
+      </button>
+      <button class="nav-btn admin-only" data-view="employees">
+        <span class="nav-icon">👤</span><span>Team</span>
+      </button>
+    </nav>
+    </div>
   </div>
 
   <script src="app.js"></script>
