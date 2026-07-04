@@ -1,4 +1,5 @@
 const { getStore } = require('@netlify/blobs');
+const { getAuthUser } = require('./auth');
 
 function store() {
   return getStore('keethbenzo-data');
@@ -15,9 +16,9 @@ async function setJSON(key, value) {
   await s.setJSON(key, value);
 }
 
+// Gibt den eingeloggten Nutzer zurück, oder null wenn nicht eingeloggt
 function checkAuth(event) {
-  const header = event.headers['x-dashboard-password'];
-  return header && header === process.env.DASHBOARD_PASSWORD;
+  return getAuthUser(event);
 }
 
 module.exports = { getJSON, setJSON, checkAuth };
