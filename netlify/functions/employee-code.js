@@ -1,33 +1,37 @@
 const nodemailer = require('nodemailer');
-const { getJSON, setJSON, checkAuth } = require('../lib/store');
-
-function generateCode() {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
-}
+const { getJSON, setJSON } = require('../lib/store');
+const { generateShortCode } = require('../lib/auth');
 
 exports.handler = async (event) => {
-  if (!checkAuth(event)) return { statusCode: 401, body: 'Unauthorized' };
   const { email } = JSON.parse(event.body || '{}');
-  if (!email) return { statusCode: 400, body: 'E-Mail erforderlich' };
+  if (!email) return { statusCode: 400, body: JSON.stringify({ error: 'E-Mail erforderlich' }) };
+  const normalizedEmail = email.trim().toLowerCase();
 
-  const code = generateCode();
+  const employees = await getJSON('employees', {});
+  if (employees[normalizedEmail]) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Für diese E-Mail existiert bereits ein Konto' }) };
+  }
+
+  const code = generateShortCode(6);
   const codes = await getJSON('employeeCodes', []);
-  codes.push({ code, email, createdAt: new Date().toISOString() });
-  await setJSON('employeeCodes', codes);
+  const filtered = codes.filter(c => c.email.toLowerCase() !== normalizedEmail || c.used);
+  filtered.push({ code, email: normalizedEmail, createdAt: new Date().toISOString(), used: false });
+  await setJSON('employeeCodes', filtered);
 
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
     const transporter = nodemailer.createTransport({
       host: 'smtp.web.de',
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
     });
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: email,
+      to: normalizedEmail,
       subject: 'Dein KeethBenzo Mitarbeiter-Code',
-      text: `Willkommen im Team! Dein Zugangscode lautet: ${code}`
+      text: `Dein Code lautet: ${code}\nGib ihn zusammen mit deinem Namen und einem Passwort ein, um dein Konto zu erstellen.`
     });
   }
-  return { statusCode: 200, body: JSON.stringify({ code }) };
+
+  return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 };
