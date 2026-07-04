@@ -1,0 +1,89 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+
+body { background: #0a0a0a; color: #f2f2f2; }
+
+/* LOGIN (nur Web-Version) */
+.login-screen { height: 100vh; display: flex; align-items: center; justify-content: center; }
+.login-box { text-align: center; width: 260px; }
+.login-box h1 { margin-bottom: 20px; font-size: 20px; }
+.login-box input { width: 100%; padding: 12px; margin-bottom: 10px; background: #161616; border: 1px solid #262626; border-radius: 8px; color: #fff; }
+.login-box button { width: 100%; padding: 12px; background: #fff; color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.login-box .error { color: #ff5c5c; margin-top: 10px; font-size: 13px; min-height: 16px; }
+
+@media (max-width: 700px) {
+  .app { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 12px; }
+  .brand { margin-bottom: 0; }
+  nav { flex-direction: row; }
+  .chat-layout { flex-direction: column; height: auto; }
+  .user-list { width: 100%; max-height: 160px; }
+}
+
+.app { display: flex; height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #000;
+  border-right: 1px solid #1f1f1f;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+}
+.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+.logo-mark {
+  width: 44px; height: 44px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px;
+}
+.brand-name { font-weight: 600; font-size: 17px; letter-spacing: 0.5px; }
+
+nav { display: flex; flex-direction: column; gap: 6px; }
+.nav-btn {
+  background: transparent; border: none; color: #a0a0a0;
+  text-align: left; padding: 12px 14px; border-radius: 8px;
+  font-size: 14px; cursor: pointer; transition: 0.15s;
+}
+.nav-btn:hover { background: #161616; color: #fff; }
+.nav-btn.active { background: #fff; color: #000; font-weight: 600; }
+
+/* CONTENT */
+.content { flex: 1; padding: 32px; overflow-y: auto; }
+.view { display: none; }
+.view.active { display: block; }
+h1 { font-size: 22px; margin-bottom: 20px; }
+h2 { font-size: 16px; color: #a0a0a0; margin: 24px 0 12px; }
+
+/* CHAT */
+.chat-layout { display: flex; height: calc(100vh - 64px); border: 1px solid #1f1f1f; border-radius: 12px; overflow: hidden; }
+.user-list { width: 260px; background: #0f0f0f; border-right: 1px solid #1f1f1f; overflow-y: auto; }
+.user-item { padding: 14px 16px; border-bottom: 1px solid #161616; cursor: pointer; }
+.user-item:hover, .user-item.active { background: #1a1a1a; }
+.user-item .name { font-weight: 600; font-size: 14px; }
+.user-item .time { font-size: 11px; color: #777; margin-top: 4px; }
+
+.chat-panel { flex: 1; display: flex; flex-direction: column; }
+.chat-header { padding: 16px; border-bottom: 1px solid #1f1f1f; font-weight: 600; }
+.chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 60%; padding: 10px 14px; border-radius: 12px; font-size: 14px; }
+.msg.user { align-self: flex-start; background: #1f1f1f; }
+.msg.admin { align-self: flex-end; background: #fff; color: #000; }
+
+.chat-input { display: flex; padding: 12px; border-top: 1px solid #1f1f1f; gap: 8px; }
+.chat-input input { flex: 1; background: #161616; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px; color: #fff; }
+.chat-input button, #generate-code-btn {
+  background: #fff; color: #000; border: none; border-radius: 8px;
+  padding: 10px 18px; font-weight: 600; cursor: pointer;
+}
+
+/* REVENUE */
+.revenue-total { font-size: 42px; font-weight: 700; margin-bottom: 24px; }
+.tx-table { width: 100%; border-collapse: collapse; }
+.tx-table th, .tx-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #1f1f1f; font-size: 14px; }
+.tx-table th { color: #a0a0a0; font-weight: 500; }
+
+/* EMPLOYEES */
+.code-form { display: flex; gap: 8px; margin-bottom: 10px; max-width: 500px; }
+.code-form input { flex: 1; background: #161616; border: 1px solid #262626; border-radius: 8px; padding: 10px 12px; color: #fff; }
