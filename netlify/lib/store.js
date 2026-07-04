@@ -2,6 +2,15 @@ const { getStore } = require('@netlify/blobs');
 const { getAuthUser } = require('./auth');
 
 function store() {
+  // Falls Netlify die Blobs-Umgebung nicht automatisch bereitstellt,
+  // manuell mit Site ID + Token konfigurieren
+  if (process.env.NETLIFY_SITE_ID && process.env.NETLIFY_TOKEN) {
+    return getStore({
+      name: 'keethbenzo-data',
+      siteID: process.env.NETLIFY_SITE_ID,
+      token: process.env.NETLIFY_TOKEN
+    });
+  }
   return getStore('keethbenzo-data');
 }
 
