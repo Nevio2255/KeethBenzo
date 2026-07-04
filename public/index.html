@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KeethBenzo Dashboard</title>
+<link rel="apple-touch-icon" href="icon.png" />
+<link rel="manifest" href="manifest.json" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-box">
+      <div class="logo-mark" style="margin: 0 auto 16px;">K€</div>
+      <h1>KeethBenzo</h1>
+      <input id="login-password" type="password" placeholder="Passwort" />
+      <button id="login-btn">Einloggen</button>
+      <p id="login-error" class="error"></p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="app" id="app" style="display:none;">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo-mark">K€</div>
+        <div class="brand-name">KeethBenzo</div>
+      </div>
+      <nav>
+        <button class="nav-btn active" data-view="chat">💬 Live-Chat</button>
+        <button class="nav-btn" data-view="revenue">📊 Umsatz</button>
+        <button class="nav-btn" data-view="employees">👤 Mitarbeiter-Codes</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section id="view-chat" class="view active">
+        <div class="chat-layout">
+          <div class="user-list" id="user-list"></div>
+          <div class="chat-panel">
+            <div class="chat-header" id="chat-header">Wähle einen Nutzer aus</div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input">
+              <input id="reply-input" placeholder="Nachricht schreiben..." />
+              <button id="reply-send">Senden</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-revenue" class="view">
+        <h1>Gesamtumsatz</h1>
+        <div class="revenue-total" id="revenue-total">€0.00</div>
+        <h2>Krypto-Transaktionen (Coinbase)</h2>
+        <table class="tx-table">
+          <thead><tr><th>Datum</th><th>Beschreibung</th><th>Betrag</th></tr></thead>
+          <tbody id="tx-body"></tbody>
+        </table>
+      </section>
+
+      <section id="view-employees" class="view">
+        <h1>Mitarbeiter-Code erstellen</h1>
+        <div class="code-form">
+          <input id="employee-email" placeholder="E-Mail-Adresse des Mitarbeiters" />
+          <button id="generate-code-btn">Code generieren & senden</button>
+        </div>
+        <h2>Vergebene Codes</h2>
+        <table class="tx-table">
+          <thead><tr><th>Code</th><th>E-Mail</th><th>Erstellt</th></tr></thead>
+          <tbody id="codes-body"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
