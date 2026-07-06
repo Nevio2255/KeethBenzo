@@ -1,6 +1,22 @@
-const nodemailer = require('nodemailer');
 const { getJSON, setJSON } = require('../lib/store');
 const { generateShortCode } = require('../lib/auth');
+
+async function sendMail(to, subject, text) {
+  if (!process.env.RESEND_API_KEY) return;
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: 'KeethBenzo <onboarding@resend.dev>',
+      to,
+      subject,
+      text
+    })
+  });
+}
 
 exports.handler = async (event) => {
   const { email } = JSON.parse(event.body || '{}');
@@ -11,7 +27,6 @@ exports.handler = async (event) => {
   const adminEmail = (process.env.ADMIN_EMAIL || '').toLowerCase();
   const accountExists = employees[normalizedEmail] || normalizedEmail === adminEmail;
 
-  // Immer "ok" zurückgeben, egal ob das Konto existiert (verhindert E-Mail-Erraten)
   if (!accountExists) {
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   }
@@ -21,19 +36,11 @@ exports.handler = async (event) => {
   resetCodes[normalizedEmail] = { code: resetCode, expires: Date.now() + 1000 * 60 * 15 };
   await setJSON('resetCodes', resetCodes);
 
-  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.web.de',
-      port: 587,
-      secure: false,
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    });
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: normalizedEmail,
-      subject: 'KeethBenzo – Passwort zurücksetzen',
-      text: `Dein Reset-Code lautet: ${resetCode}\nGültig für 15 Minuten.`
-    });
-  }
+  await sendMail(
+    normalizedEmail,
+    'KeethBenzo – Passwort zurücksetzen',
+    `Dein Reset-Code lautet: ${resetCode}\nGültig für 15 Minuten.`
+  );
+
   return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 };
