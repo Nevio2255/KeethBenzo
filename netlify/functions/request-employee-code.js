@@ -1,6 +1,22 @@
-const nodemailer = require('nodemailer');
 const { getJSON, setJSON } = require('../lib/store');
 const { generateShortCode } = require('../lib/auth');
+
+async function sendMail(to, subject, text) {
+  if (!process.env.RESEND_API_KEY) return;
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: 'KeethBenzo <onboarding@resend.dev>',
+      to,
+      subject,
+      text
+    })
+  });
+}
 
 exports.handler = async (event) => {
   const { email } = JSON.parse(event.body || '{}');
@@ -18,20 +34,11 @@ exports.handler = async (event) => {
   filtered.push({ code, email: normalizedEmail, createdAt: new Date().toISOString(), used: false });
   await setJSON('employeeCodes', filtered);
 
-  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.web.de',
-      port: 587,
-      secure: false,
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    });
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: normalizedEmail,
-      subject: 'Dein KeethBenzo Mitarbeiter-Code',
-      text: `Dein Code lautet: ${code}\nGib ihn zusammen mit deinem Namen und einem Passwort ein, um dein Konto zu erstellen.`
-    });
-  }
+  await sendMail(
+    normalizedEmail,
+    'Dein KeethBenzo Mitarbeiter-Code',
+    `Dein Code lautet: ${code}\nGib ihn zusammen mit deinem Namen und einem Passwort ein, um dein Konto zu erstellen.`
+  );
 
   return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 };
