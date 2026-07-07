@@ -2,8 +2,11 @@ const { getJSON, setJSON } = require('../lib/store');
 const { generateShortCode } = require('../lib/auth');
 
 async function sendMail(toEmail, code) {
-  if (!process.env.EMAILJS_PRIVATE_KEY) return;
-  await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+  if (!process.env.EMAILJS_PRIVATE_KEY) {
+    console.error('EMAILJS_PRIVATE_KEY fehlt');
+    return;
+  }
+  const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -17,6 +20,10 @@ async function sendMail(toEmail, code) {
       }
     })
   });
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('EmailJS Fehler:', res.status, errorText);
+  }
 }
 
 exports.handler = async (event) => {
