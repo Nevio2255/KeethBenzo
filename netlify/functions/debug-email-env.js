@@ -15,7 +15,8 @@ exports.handler = async () => {
 
     EMAILJS_PRIVATE_KEY_gesetzt: !!process.env.EMAILJS_PRIVATE_KEY,
     EMAILJS_PRIVATE_KEY_länge: emailjsKey.length,
-    EMAILJS_PRIVATE_KEY_hat_leerzeichen: /\s/.test(emailjsKey)
+    EMAILJS_PRIVATE_KEY_hat_leerzeichen: /\s/.test(emailjsKey),
+    EMAILJS_PRIVATE_KEY_erste_4_zeichen: emailjsKey.slice(0, 4)
   };
 
   return { statusCode: 200, body: JSON.stringify(info, null, 2) };
