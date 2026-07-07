@@ -1,19 +1,20 @@
 const { getJSON, setJSON } = require('../lib/store');
 const { generateShortCode } = require('../lib/auth');
 
-async function sendMail(to, subject, text) {
-  if (!process.env.RESEND_API_KEY) return;
-  await fetch('https://api.resend.com/emails', {
+async function sendMail(toEmail, code) {
+  if (!process.env.EMAILJS_PRIVATE_KEY) return;
+  await fetch('https://api.emailjs.com/api/v1.0/email/send', {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: 'KeethBenzo <onboarding@resend.dev>',
-      to,
-      subject,
-      text
+      service_id: 'service_sngrgol',
+      template_id: 'template_yxgtmtl',
+      user_id: 'ildmgzLV9EhyPcTYd',
+      accessToken: process.env.EMAILJS_PRIVATE_KEY,
+      template_params: {
+        email: toEmail,
+        code: code
+      }
     })
   });
 }
@@ -34,11 +35,7 @@ exports.handler = async (event) => {
   filtered.push({ code, email: normalizedEmail, createdAt: new Date().toISOString(), used: false });
   await setJSON('employeeCodes', filtered);
 
-  await sendMail(
-    normalizedEmail,
-    'Dein KeethBenzo Mitarbeiter-Code',
-    `Dein Code lautet: ${code}\nGib ihn zusammen mit deinem Namen und einem Passwort ein, um dein Konto zu erstellen.`
-  );
+  await sendMail(normalizedEmail, code);
 
   return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 };
