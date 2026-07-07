@@ -1,6 +1,7 @@
 exports.handler = async () => {
   const user = process.env.EMAIL_USER || '';
   const pass = process.env.EMAIL_PASS || '';
+  const emailjsKey = process.env.EMAILJS_PRIVATE_KEY || '';
 
   const info = {
     EMAIL_USER_gesetzt: !!process.env.EMAIL_USER,
@@ -11,8 +12,10 @@ exports.handler = async () => {
     EMAIL_PASS_gesetzt: !!process.env.EMAIL_PASS,
     EMAIL_PASS_länge: pass.length,
     EMAIL_PASS_hat_leerzeichen: /\s/.test(pass),
-    EMAIL_PASS_erste_2_zeichen: pass.slice(0, 2),
-    EMAIL_PASS_letzte_2_zeichen: pass.slice(-2)
+
+    EMAILJS_PRIVATE_KEY_gesetzt: !!process.env.EMAILJS_PRIVATE_KEY,
+    EMAILJS_PRIVATE_KEY_länge: emailjsKey.length,
+    EMAILJS_PRIVATE_KEY_hat_leerzeichen: /\s/.test(emailjsKey)
   };
 
   return { statusCode: 200, body: JSON.stringify(info, null, 2) };
